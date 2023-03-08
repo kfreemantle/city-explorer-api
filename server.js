@@ -3,6 +3,9 @@
 // express server, and we use required for these
 const express = require('express');
 
+// AXIOS requirement
+const axios = require('axios');
+
 // dotenv.config is required too
 require('dotenv').config();
 
@@ -23,18 +26,14 @@ const PORT = process.env.PORT || 3001;
 //Routes 
 app.get('/weather', (req, res, next) => {
   try {  // we're not using lat/lon here per Sheyna's instructions
-    let city = data.find(cityData => {
-      return cityData.city_name === cityQuery;
-    });
     let cityQuery = req.query.searchQuery;
-    
-    
+    let city = data.find(cityData => cityData.city_name.toLowerCase() === cityQuery.toLowerCase());
+    // console.log('test3', city);
     let weatherData = city.data.map(info => {
       return new Forecast(info);
     });
-
+    console.log('testWeatherData', weatherData);
     res.send(weatherData);
-    
   } catch (error) {
     next(error);
   }
@@ -44,8 +43,10 @@ app.get('/weather', (req, res, next) => {
 // Forecast class, using date/description per the instructions
 class Forecast {
   constructor(WeatherObj) {
+    console.log('testConstructor', WeatherObj);
     this.date = WeatherObj.datetime;
-    this.description = `Low of ${WeatherObj.data[0].low_temp}, high of ${WeatherObj.data[0].max_temp} with ${WeatherObj.data[0].weather.description}`;
+    // verbose description as a template literal in order to render data from the data objects
+    this.description = `Low of ${WeatherObj.low_temp}, high of ${WeatherObj.max_temp} with ${WeatherObj.weather.description}`;
   }
 }
 
