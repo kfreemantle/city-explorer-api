@@ -1,0 +1,11 @@
+{
+  "name": "city-explorer-api",
+  "version": "1.0.0",
+  "description": "Server and API setup for city-explorer project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kyle Freemantle",
+  "license": "MIT"
+}
