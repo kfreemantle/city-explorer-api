@@ -25,7 +25,10 @@ const PORT = process.env.PORT || 3001;
 
 //Routes 
 app.get('/weather', (req, res, next) => {
-  try {  // we're not using lat/lon here per Sheyna's instructions
+  try {  
+    // including lat/lon for lab08 forward
+    let latitude = req.query.lat;
+    let longitude = req.query.lon;
     let cityQuery = req.query.searchQuery;
     let city = data.find(cityData => cityData.city_name.toLowerCase() === cityQuery.toLowerCase());
     // console.log('test3', city);
