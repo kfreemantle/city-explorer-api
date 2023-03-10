@@ -23,24 +23,37 @@ app.use(cors());
 const PORT = process.env.PORT || 3001;
 
 
-//Routes 
-app.get('/weather', (req, res, next) => {
+//Routes
+ 
+// WeatherBit URL with API key ref for daily forecast.  string has API KEY, then units=I for freedom units, 3 days instead of default 10, then lat/long plugged in from the return from the LocationIQ API.  This will get moved to a component later.
+
+// refactored route to live weather data
+app.get('/weather', async (req, res, next) => {
   try {  
     // including lat/lon for lab08 forward
     let latitude = req.query.lat;
     let longitude = req.query.lon;
     let cityQuery = req.query.searchQuery;
-    let city = data.find(cityData => cityData.city_name.toLowerCase() === cityQuery.toLowerCase());
-    // console.log('test3', city);
-    let weatherData = city.data.map(info => {
-      return new Forecast(info);
-    });
-    console.log('testWeatherData', weatherData);
+    // parking the URL in variable for readability
+    let weatherBitURL = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHERBIT_API_KEY}&units=I&days=3&lat=${latitude}&lon=${longitude}`;
+    // now parking axios await for the same reason
+    let axiosResponse = await axios.get(weatherBitURL);
+    let liveData = axiosResponse.data;
+
+    // mapping the data from weatherbit
+    let weatherData = liveData.data.map(requestedWeatherData => {
+      return new Forecast(requestedWeatherData);
+    }); 
     res.send(weatherData);
   } catch (error) {
     next(error);
   }
+    
 });
+
+
+
+
 
 
 // Forecast class, using date/description per the instructions
