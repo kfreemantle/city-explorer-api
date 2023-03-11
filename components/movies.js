@@ -9,15 +9,34 @@ class Movie { // movie constructor following documentation from TMDB
   constructor(userMovieSearch) {
     this.title = userMovieSearch.original_title;
     this.overview = userMovieSearch.overview;
-    this.avg_votes = userMovieSearch.vote_average;
+    this.average_votes = userMovieSearch.vote_average;
     this.total_votes = userMovieSearch.vote_count;
-    this.img_url = `https://image.tmdb.org/t/p/w500${userMovieSearch.poster_path}`;
+    this.image_url = `https://image.tmdb.org/t/p/w500${userMovieSearch.poster_path}`;
     this.popularity = userMovieSearch.popularity;
-    this.release_date = userMovieSearch.release_date;
+    this.release_on = userMovieSearch.release_date;
 
   }
 }
 
+// getMovies function will get exported at the bottom of the page
+async function getMovies(req, res, next) {
+  try {
+    let city = req.query.search;
+    let key = 'Movie data for-' + city;
+    let cacheTime = 1000*60*60*24*7; // one week in MS
+
+    if (cache[key] && Date.now() - cache[key].timestamp < cacheTime) {
+      // if the key exists and it's older than a week, acknowledge the cache
+      response.status(200).send(cache[key].data);
+      console.log('Movie cache hit');
+    } else {
+      console.log('Movie cache miss'); // fill out the movie cache
+      let movieURL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1&include_adult=false&query=${city}&year=2020`;
+      // let movieURL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1&include_adult=false&query=${city}&year=2020`  // the year string is giving me grief 
+    }
+    }
+  }
+}
 
 
 "title": "Sleepless in Seattle",
