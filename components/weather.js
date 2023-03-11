@@ -4,7 +4,7 @@
 // still need axios, and if we're doing axios inside of components we don't need it on the server.js file.
 const axios = require('axios');
 // we're accessing the cache component we made from here same as we would a different required component.  Lecture had it using let but I don't know if it matters.  .js suffix isn't necessary but I left it for my own clarity
-let cache = require('./cache.js');
+const cache = require('./cache.js');
 
 // In the URL below I've included units=I and days=3 in the string for three days of weather observations in freedom units.
 
