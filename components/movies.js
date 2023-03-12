@@ -23,7 +23,7 @@ async function getMovies(req, res, next) {
   try {
     let city = req.query.search;
     let key = 'Movie data for-' + city;
-    let cacheTime = 1000*60*60*24*7; // one week in MS
+    let cacheTime = 1000 * 60 * 60 * 24 * 7; // one week in MS
     let movieAPIData = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1&include_adult=false&query=${city}`);
     // let movieURL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1&include_adult=false&query=${city}&year=2020`  // the year string is giving me grief 
     let processedMovieData = movieAPIData.data.results.map(i => new Movie(i));  // I'm not really understanding how the map function works with this arrow function
@@ -34,18 +34,20 @@ async function getMovies(req, res, next) {
       console.log('Movie cache hit');
     } else {
       console.log('Movie cache miss'); // fill out the movie cache
-      cache[key] = { };
+      cache[key] = {};
       cache[key].timestamp = Date.now();
+      cache[key].data = processedMovieData;
+      res.send(processedMovieData);
+
     }
-    }
+    console.log(processedMovieData);
+    res.send(cache[key].data);
+
+  } catch (error) {
+    next(error);
   }
 }
 
 
-"title": "Sleepless in Seattle",
-    "overview": "A young boy who tries to set his dad up on a date after the death of his mother. He calls into a radio station to talk about his dad’s loneliness which soon leads the dad into meeting a Journalist Annie who flies to Seattle to write a story about the boy and his dad. Yet Annie ends up with more than just a story in this popular romantic comedy.",
-    "average_votes": "6.60",
-    "total_votes": "881",
-    "image_url": "https://image.tmdb.org/t/p/w500/afkYP15OeUOD0tFEmj6VvejuOcz.jpg",
-    "popularity": "8.2340",
-    "released_on"
+
+module.exports = getMovies;
