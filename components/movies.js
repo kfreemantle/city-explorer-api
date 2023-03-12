@@ -24,6 +24,9 @@ async function getMovies(req, res, next) {
     let city = req.query.search;
     let key = 'Movie data for-' + city;
     let cacheTime = 1000*60*60*24*7; // one week in MS
+    let movieAPIData = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1&include_adult=false&query=${city}`);
+    // let movieURL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1&include_adult=false&query=${city}&year=2020`  // the year string is giving me grief 
+    let processedMovieData = movieAPIData.data.results.map(i => new Movie(i));  // I'm not really understanding how the map function works with this arrow function
 
     if (cache[key] && Date.now() - cache[key].timestamp < cacheTime) {
       // if the key exists and it's older than a week, acknowledge the cache
@@ -31,8 +34,8 @@ async function getMovies(req, res, next) {
       console.log('Movie cache hit');
     } else {
       console.log('Movie cache miss'); // fill out the movie cache
-      let movieURL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1&include_adult=false&query=${city}&year=2020`;
-      // let movieURL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1&include_adult=false&query=${city}&year=2020`  // the year string is giving me grief 
+      cache[key] = { };
+      cache[key].timestamp = Date.now();
     }
     }
   }
