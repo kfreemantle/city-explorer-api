@@ -21,10 +21,11 @@ class Movie { // movie constructor following documentation from TMDB
 // getMovies function will get exported at the bottom of the page
 async function getMovies(req, res, next) {
   try {
-    let city = req.query.search;
+    let city = req.query.keyword;
     let key = 'Movie data for-' + city;
     let cacheTime = 1000 * 60 * 60 * 24 * 7; // one week in MS
     let movieAPIData = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1&include_adult=false&query=${city}`);
+    console.log(movieAPIData);
     // let movieURL = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.TMDB_API_KEY}&language=en-US&page=1&include_adult=false&query=${city}&year=2020`  // the year string is giving me grief 
     let processedMovieData = movieAPIData.data.results.map(i => new Movie(i));  // I'm not really understanding how the map function works with this arrow function
 
@@ -40,7 +41,7 @@ async function getMovies(req, res, next) {
       res.send(processedMovieData);
 
     }
-    console.log(processedMovieData);
+    // console.log(processedMovieData);
     res.send(cache[key].data);
 
   } catch (error) {
