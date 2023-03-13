@@ -9,6 +9,7 @@ const cache = require('./cache.js');
 // In the URL below I've included units=I and days=3 in the string for three days of weather observations in freedom units.
 
 async function getWeather(latitude, longitude) {
+
   const key = 'Weather at:' + latitude + longitude;
   const url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHERBIT_API_KEY}&units=I&days=3&lat=${latitude}&lon=${longitude}`;
 
